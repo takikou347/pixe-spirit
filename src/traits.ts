@@ -1,4 +1,5 @@
 import { seedBool, seedPick, seedRange } from "./seed.js";
+
 import type {
   BodyShape,
   DecorationType,

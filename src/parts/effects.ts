@@ -1,6 +1,7 @@
-import { seedOffset } from "../seed.js";
-import type { AnimationType, ColorPalette, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+import { seedOffset } from "../seed.js";
+
+import type { AnimationType, ColorPalette, SpiritFrame } from "../types.js";
 
 /**
  * Draw animation effects (cheeks, sparkles, bounce particles).

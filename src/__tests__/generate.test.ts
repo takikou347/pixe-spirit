@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import {
   deriveTraits,
   generateSpirit,
@@ -6,6 +7,7 @@ import {
   getPalettes,
   getPresets,
 } from "../index.js";
+
 import type { PresetId } from "../types.js";
 
 describe("generateSpirit (procedural)", () => {

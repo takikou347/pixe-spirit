@@ -1,8 +1,9 @@
-import type { AnimationType, ColorPalette, PresetId, PresetInfo, SpiritFrame } from "../types.js";
 import { drawPresetBaby } from "./baby.js";
 import { drawPresetChildBalanced } from "./child-balanced.js";
 import { drawPresetChildDiary } from "./child-diary.js";
 import { drawPresetEgg } from "./egg.js";
+
+import type { AnimationType, ColorPalette, PresetId, PresetInfo, SpiritFrame } from "../types.js";
 
 type PresetDrawFn = (
   frame: number,

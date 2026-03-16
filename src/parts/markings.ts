@@ -1,6 +1,7 @@
-import { seedOffset } from "../seed.js";
-import type { ColorPalette, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+import { seedOffset } from "../seed.js";
+
+import type { ColorPalette, SpiritFrame } from "../types.js";
 
 const CX = 16;
 const CY = 16;

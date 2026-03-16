@@ -1,5 +1,6 @@
-import { seedOffset, seedVariation } from "../seed.js";
 import { createFrame, setPixel } from "../frame.js";
+import { seedOffset, seedVariation } from "../seed.js";
+
 import type { AnimationType, ColorPalette, SpiritFrame } from "../types.js";
 
 export function drawPresetBaby(

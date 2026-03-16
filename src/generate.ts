@@ -1,3 +1,4 @@
+import { createFrame } from "./frame.js";
 import { resolvePalette } from "./palettes.js";
 import { drawBody, getBodyBounds } from "./parts/body.js";
 import { drawDecoration } from "./parts/decoration.js";
@@ -10,7 +11,7 @@ import { drawTail } from "./parts/tail.js";
 import { getPresetDrawer } from "./presets/index.js";
 import { seedPick } from "./seed.js";
 import { deriveTraits } from "./traits.js";
-import { createFrame } from "./frame.js";
+
 import type {
   AnimationConfig,
   AnimationType,

@@ -1,0 +1,13 @@
+{
+  // markdownlint-cli2 設定
+  // ルール定義は .markdownlint.json に分離（エディタ連携のため）
+
+  // lint 対象の glob パターン
+  "globs": ["**/*.md"],
+
+  // 除外パターン
+  "ignores": ["**/node_modules/**", "dist/**", "coverage/**", "CHANGELOG.md"],
+
+  // --fix 時の動作
+  "fix": false
+}

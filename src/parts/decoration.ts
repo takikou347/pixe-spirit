@@ -1,5 +1,6 @@
-import type { ColorPalette, DecorationType, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+
+import type { ColorPalette, DecorationType, SpiritFrame } from "../types.js";
 
 const CX = 16;
 

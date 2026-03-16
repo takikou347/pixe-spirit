@@ -1,5 +1,6 @@
-import type { BodyShape, ColorPalette, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+
+import type { BodyShape, ColorPalette, SpiritFrame } from "../types.js";
 
 const CX = 16;
 const CY = 16;

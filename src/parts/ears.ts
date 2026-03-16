@@ -1,5 +1,6 @@
-import type { ColorPalette, EarType, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+
+import type { ColorPalette, EarType, SpiritFrame } from "../types.js";
 
 const CX = 16;
 

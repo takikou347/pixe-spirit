@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { seedOffset, seedVariation } from "../seed.js";
 
 describe("seedVariation", () => {

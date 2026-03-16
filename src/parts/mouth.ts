@@ -1,5 +1,6 @@
-import type { AnimationType, ColorPalette, MouthStyle, SpiritFrame } from "../types.js";
 import { setPixel } from "../frame.js";
+
+import type { AnimationType, ColorPalette, MouthStyle, SpiritFrame } from "../types.js";
 
 const CX = 16;
 
