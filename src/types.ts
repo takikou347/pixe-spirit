@@ -1,8 +1,8 @@
 /** A single frame of generated pixel data. */
 export interface SpiritFrame {
-  /** Grid width in pixels (default: 32). */
+  /** Grid width in pixels. */
   width: number;
-  /** Grid height in pixels (default: 32). */
+  /** Grid height in pixels. */
   height: number;
   /** 2D pixel grid — `pixels[y][x]` is a hex color string or `null` (transparent). */
   pixels: (string | null)[][];
@@ -18,10 +18,10 @@ export interface ColorPalette {
 }
 
 /** Supported animation types. */
-export type AnimationType = "idle" | "happy" | "sad" | "sleep" | "evolve" | "levelup";
+export type AnimationType = "idle" | "happy" | "sad" | "sleep";
 
-/** Supported stage identifiers. */
-export type StageId = "egg" | "baby_01" | "child_diary_01" | "child_balanced_01";
+/** Supported preset identifiers. */
+export type PresetId = "egg" | "baby" | "child_diary" | "child_balanced";
 
 /** Supported palette identifiers. */
 export type PaletteId =
@@ -41,25 +41,57 @@ export interface AnimationConfig {
   loop: boolean;
 }
 
-/** Metadata about a stage. */
-export interface StageInfo {
-  id: StageId;
+/** Body shape type (procedurally selected from seed). */
+export type BodyShape = "circle" | "oval_tall" | "oval_wide" | "rounded_square" | "teardrop";
+
+/** Eye style type. */
+export type EyeStyle = "dot" | "small" | "medium" | "large" | "cyclops";
+
+/** Mouth style type. */
+export type MouthStyle = "line" | "smile" | "open" | "none";
+
+/** Decoration type. */
+export type DecorationType =
+  | "none"
+  | "halo"
+  | "horns"
+  | "antennae"
+  | "hat"
+  | "leaf"
+  | "crown"
+  | "book";
+
+/** Resolved spirit traits derived from a seed. */
+export interface SpiritTraits {
+  bodyShape: BodyShape;
+  bodySize: number;
+  eyeStyle: EyeStyle;
+  eyeSpread: number;
+  mouthStyle: MouthStyle;
+  decoration: DecorationType;
+  hasMarkings: boolean;
+  markingPattern: number;
+}
+
+/** Metadata about a preset. */
+export interface PresetInfo {
+  id: PresetId;
   name: string;
-  tier: number;
+  description: string;
 }
 
 /** Options for generating a spirit frame. */
 export interface GenerateOptions {
-  /** Stage to generate. */
-  stage: StageId;
+  /** Seed for deterministic generation. Different seeds produce different characters. */
+  seed: number;
   /** Animation type. Default: "idle". */
   animation?: AnimationType;
   /** Animation frame index. Default: 0. */
   frame?: number;
-  /** Palette identifier. Default: "blue_light". */
+  /** Palette identifier. If omitted, palette is derived from seed. */
   palette?: PaletteId;
-  /** Custom palette (overrides palette ID). */
+  /** Custom palette (overrides palette ID and seed-derived palette). */
   customPalette?: ColorPalette;
-  /** Seed for deterministic variation. Default: 0. */
-  seed?: number;
+  /** Use a preset character instead of procedural generation. */
+  preset?: PresetId;
 }

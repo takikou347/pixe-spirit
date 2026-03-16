@@ -4,11 +4,12 @@ Seed-deterministic pixel spirit generator. Outputs pure pixel data — rendering
 
 ## Features
 
+- **Procedural generation**: Different seeds produce different characters — body shape, eyes, mouth, decorations all vary
 - **Deterministic**: Same seed always produces the same character
 - **Framework-agnostic**: Outputs raw pixel data (2D color array), not Canvas/SVG/DOM
-- **Multiple stages**: Egg, Baby, Child (Diary), Child (Balanced)
-- **8 color palettes**: 4 colors × light/dark themes, plus custom palette support
-- **Animations**: idle, happy, sad, sleep, evolve, levelup frame data
+- **8 color palettes**: 4 colors x light/dark themes, plus custom palette support
+- **Presets**: 4 pre-designed characters (Egg, Baby, Child Diary, Child Balanced)
+- **Animations**: idle, happy, sad, sleep frame data
 
 ## Install
 
@@ -16,30 +17,54 @@ Seed-deterministic pixel spirit generator. Outputs pure pixel data — rendering
 npm install pixe-spirit
 ```
 
-## Usage
+## Quick Start
 
 ```typescript
 import { generateSpirit } from "pixe-spirit";
 
-const frame = generateSpirit({
-  stage: "baby_01",
-  palette: "blue_light",
-  seed: 42,
-  animation: "idle",
-  frame: 0,
-});
+// Just pass a seed — get a unique character
+const frame = generateSpirit({ seed: 42 });
 
 // frame.pixels[y][x] is a hex color string or null (transparent)
 // frame.width === 32, frame.height === 32
 ```
 
-### Render to Canvas (example)
+Different seeds produce different characters:
+
+```typescript
+const char1 = generateSpirit({ seed: 0 });   // might be: round body, dot eyes, halo
+const char2 = generateSpirit({ seed: 100 }); // might be: tall body, large eyes, horns
+const char3 = generateSpirit({ seed: 999 }); // might be: wide body, cyclops, crown
+```
+
+## Procedural Traits
+
+Each seed deterministically generates these traits:
+
+| Trait | Variants |
+|-------|----------|
+| **Body shape** | circle, oval (tall), oval (wide), rounded square, teardrop |
+| **Eye style** | dot, small, medium, large, cyclops |
+| **Mouth style** | line, smile, open, none |
+| **Decoration** | none, halo, horns, antennae, hat, leaf, crown, book |
+| **Markings** | dots, stripe, patch, speckles (or none) |
+
+You can inspect what traits a seed will produce:
+
+```typescript
+import { deriveTraits } from "pixe-spirit";
+
+const traits = deriveTraits(42);
+// { bodyShape: "circle", eyeStyle: "medium", mouthStyle: "smile", decoration: "halo", ... }
+```
+
+## Render to Canvas (example)
 
 ```typescript
 import { generateSpirit } from "pixe-spirit";
 
-function renderToCanvas(canvas: HTMLCanvasElement, scale: number = 4) {
-  const frame = generateSpirit({ stage: "baby_01", seed: 42 });
+function renderToCanvas(canvas: HTMLCanvasElement, seed: number, scale: number = 4) {
+  const frame = generateSpirit({ seed });
   const ctx = canvas.getContext("2d")!;
 
   canvas.width = frame.width * scale;
@@ -58,7 +83,7 @@ function renderToCanvas(canvas: HTMLCanvasElement, scale: number = 4) {
 }
 ```
 
-### Animation loop (example)
+## Animation
 
 ```typescript
 import { generateSpirit, getAnimationConfig } from "pixe-spirit";
@@ -69,7 +94,7 @@ const config = getAnimationConfig("idle");
 let currentFrame = 0;
 setInterval(() => {
   const frame = generateSpirit({
-    stage: "baby_01",
+    seed: 42,
     animation: "idle",
     frame: currentFrame,
   });
@@ -77,6 +102,21 @@ setInterval(() => {
   currentFrame = (currentFrame + 1) % config.frames;
 }, 1000 / config.fps);
 ```
+
+## Presets
+
+Use pre-designed characters instead of procedural generation:
+
+```typescript
+const frame = generateSpirit({ seed: 42, preset: "baby" });
+```
+
+| Preset | Description |
+|--------|-------------|
+| `egg` | A wobbling egg with sparkles |
+| `baby` | A round spirit with expressive eyes |
+| `child_diary` | A knowledge spirit with a book motif |
+| `child_balanced` | A harmony spirit with a halo accent |
 
 ## API
 
@@ -86,12 +126,12 @@ Generate a single frame of pixel data.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `stage` | `StageId` | *(required)* | `"egg"`, `"baby_01"`, `"child_diary_01"`, `"child_balanced_01"` |
-| `animation` | `AnimationType` | `"idle"` | `"idle"`, `"happy"`, `"sad"`, `"sleep"`, `"evolve"`, `"levelup"` |
+| `seed` | `number` | *(required)* | Seed for deterministic generation |
+| `animation` | `AnimationType` | `"idle"` | `"idle"`, `"happy"`, `"sad"`, `"sleep"` |
 | `frame` | `number` | `0` | Animation frame index |
-| `palette` | `PaletteId` | `"blue_light"` | Preset palette ID |
-| `customPalette` | `ColorPalette` | — | Custom colors (overrides `palette`) |
-| `seed` | `number` | `0` | Seed for deterministic variation |
+| `palette` | `PaletteId` | *(from seed)* | Preset palette ID |
+| `customPalette` | `ColorPalette` | — | Custom colors (overrides all) |
+| `preset` | `PresetId` | — | Use a pre-designed character |
 
 ### `SpiritFrame`
 
@@ -103,9 +143,13 @@ interface SpiritFrame {
 }
 ```
 
-### `getStages(): StageInfo[]`
+### `deriveTraits(seed): SpiritTraits`
 
-Returns metadata for all available stages.
+Inspect what traits a seed will produce without generating pixels.
+
+### `getPresets(): PresetInfo[]`
+
+Returns metadata for all available presets.
 
 ### `getPalettes(): Record<PaletteId, ColorPalette>`
 
@@ -114,15 +158,6 @@ Returns all built-in color palettes.
 ### `getAnimationConfig(animation): AnimationConfig`
 
 Returns frame count, FPS, and loop info for an animation type.
-
-## Stages
-
-| Stage | ID | Tier | Description |
-|-------|----|------|-------------|
-| Egg | `egg` | 0 | Wobbling egg with sparkles |
-| Baby | `baby_01` | 1 | Round spirit with eyes, mouth, seed-based markings |
-| Child Diary | `child_diary_01` | 2 | Knowledge spirit with book motif |
-| Child Balanced | `child_balanced_01` | 2 | Harmony spirit with halo accent |
 
 ## Palettes
 
