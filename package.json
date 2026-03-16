@@ -30,6 +30,7 @@
     "lint": "eslint src/",
     "format": "prettier --write 'src/**/*.ts'",
     "format:check": "prettier --check 'src/**/*.ts'",
+    "build:docs": "tsup && cp dist/index.js docs/lib/index.js && cp dist/index.js.map docs/lib/index.js.map",
     "prepublishOnly": "pnpm run build"
   },
   "keywords": [

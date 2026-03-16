@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pixe-spirit Gallery</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f0f1a;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { text-align: center; font-size: 2rem; margin-bottom: 8px; }
+    .subtitle { text-align: center; color: #888; margin-bottom: 32px; font-size: 0.9rem; }
+    .subtitle a { color: #6BB5FF; text-decoration: none; }
+    .subtitle a:hover { text-decoration: underline; }
+
+    .controls {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: end;
+    }
+    .control-group { display: flex; flex-direction: column; gap: 4px; }
+    .control-group label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.05em; }
+    .control-group select, .control-group input {
+      background: #16213e;
+      color: #e0e0e0;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+    }
+    .control-group input[type="number"] { width: 80px; }
+    button {
+      background: #6BB5FF;
+      color: #0f0f1a;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    button:hover { background: #99CCFF; }
+    .btn-secondary { background: #333; color: #e0e0e0; }
+    .btn-secondary:hover { background: #444; }
+
+    h2 {
+      font-size: 1.2rem;
+      margin: 24px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #222;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: #1a1a2e;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      transition: transform 0.1s;
+      cursor: pointer;
+    }
+    .card:hover { transform: scale(1.03); }
+    .card canvas {
+      display: block;
+      margin: 0 auto 8px;
+      image-rendering: pixelated;
+    }
+    .card .seed-label { font-size: 0.9rem; font-weight: 600; color: #6BB5FF; }
+    .card .traits-label { font-size: 0.7rem; color: #666; margin-top: 4px; line-height: 1.4; }
+
+    .detail-panel {
+      display: none;
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .detail-panel.active { display: block; }
+    .detail-header { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
+    .detail-header canvas { image-rendering: pixelated; }
+    .detail-info { flex: 1; }
+    .detail-info h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    .detail-code {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      white-space: pre;
+      overflow-x: auto;
+      color: #a0d0ff;
+    }
+
+    .section-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      padding: 6px 16px;
+      border-radius: 6px;
+      background: #16213e;
+      color: #888;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border: none;
+    }
+    .tab.active { background: #6BB5FF; color: #0f0f1a; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>pixe-spirit</h1>
+  <p class="subtitle">
+    Seed-deterministic pixel spirit generator
+    &mdash; <a href="https://github.com/takikou347/pixe-spirit">GitHub</a>
+    &mdash; <a href="https://www.npmjs.com/package/pixe-spirit">npm</a>
+  </p>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Seed Range</label>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <input type="number" id="seedStart" value="0" min="0">
+        <span style="color:#666">–</span>
+        <input type="number" id="seedEnd" value="49" min="0">
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Body Shape</label>
+      <select id="filterBody">
+        <option value="">All</option>
+        <option value="circle">Circle</option>
+        <option value="oval_tall">Oval Tall</option>
+        <option value="oval_wide">Oval Wide</option>
+        <option value="rounded_square">Rounded Square</option>
+        <option value="teardrop">Teardrop</option>
+        <option value="dome">Dome (Slime)</option>
+        <option value="tall_dome">Tall Dome</option>
+        <option value="creature">Creature</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Eye Style</label>
+      <select id="filterEye">
+        <option value="">All</option>
+        <option value="dot">Dot</option>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+        <option value="cyclops">Cyclops</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Ear Type</label>
+      <select id="filterEar">
+        <option value="">All</option>
+        <option value="none">None</option>
+        <option value="pointed">Pointed</option>
+        <option value="round">Round</option>
+        <option value="long">Long</option>
+        <option value="cat">Cat</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Tail Type</label>
+      <select id="filterTail">
+        <option value="">All</option>
+        <option value="none">None</option>
+        <option value="bushy">Bushy</option>
+        <option value="thin">Thin</option>
+        <option value="curled">Curled</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Palette</label>
+      <select id="paletteSelect">
+        <option value="">From Seed</option>
+        <option value="red_light">Red Light</option>
+        <option value="blue_light">Blue Light</option>
+        <option value="green_light">Green Light</option>
+        <option value="yellow_light">Yellow Light</option>
+        <option value="red_dark">Red Dark</option>
+        <option value="blue_dark">Blue Dark</option>
+        <option value="green_dark">Green Dark</option>
+        <option value="yellow_dark">Yellow Dark</option>
+      </select>
+    </div>
+    <button onclick="renderGallery()">Generate</button>
+    <button class="btn-secondary" onclick="randomRange()">Random Seeds</button>
+  </div>
+
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-header">
+      <canvas id="detailCanvas" width="192" height="192"></canvas>
+      <div class="detail-info">
+        <h3 id="detailTitle"></h3>
+        <div id="detailTraits" style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;"></div>
+        <div class="detail-code" id="detailCode"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-tabs">
+    <button class="tab active" onclick="switchTab('procedural', this)">Procedural</button>
+    <button class="tab" onclick="switchTab('presets', this)">Presets</button>
+  </div>
+
+  <div id="procedural">
+    <div class="grid" id="gallery"></div>
+  </div>
+  <div id="presets" style="display:none;">
+    <div class="grid" id="presetGallery"></div>
+  </div>
+
+  <script type="module">
+    import { generateSpirit, deriveTraits, getPresets, getPalettes, getAnimationConfig } from './lib/index.js';
+
+    window._lib = { generateSpirit, deriveTraits, getPresets, getPalettes, getAnimationConfig };
+
+    const SCALE = 5;
+    const DETAIL_SCALE = 6;
+
+    function renderFrame(frame, scale) {
+      const canvas = document.createElement('canvas');
+      canvas.width = frame.width * scale;
+      canvas.height = frame.height * scale;
+      const ctx = canvas.getContext('2d');
+      for (let y = 0; y < frame.height; y++) {
+        for (let x = 0; x < frame.width; x++) {
+          const color = frame.pixels[y][x];
+          if (color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * scale, y * scale, scale, scale);
+          }
+        }
+      }
+      return canvas;
+    }
+
+    function renderToCanvas(canvas, frame, scale) {
+      canvas.width = frame.width * scale;
+      canvas.height = frame.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < frame.height; y++) {
+        for (let x = 0; x < frame.width; x++) {
+          const color = frame.pixels[y][x];
+          if (color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * scale, y * scale, scale, scale);
+          }
+        }
+      }
+    }
+
+    function showDetail(seed, palette) {
+      const panel = document.getElementById('detailPanel');
+      const opts = { seed };
+      if (palette) opts.palette = palette;
+      const frame = generateSpirit(opts);
+      const traits = deriveTraits(seed);
+
+      renderToCanvas(document.getElementById('detailCanvas'), frame, DETAIL_SCALE);
+      document.getElementById('detailTitle').textContent = `Seed: ${seed}`;
+
+      const traitsHtml = [
+        `Body: ${traits.bodyShape} (size ${traits.bodySize})`,
+        `Eyes: ${traits.eyeStyle} (spread ${traits.eyeSpread})`,
+        `Mouth: ${traits.mouthStyle}`,
+        `Decoration: ${traits.decoration}`,
+        `Ears: ${traits.earType}`,
+        `Tail: ${traits.tailType}`,
+        `Markings: ${traits.hasMarkings ? `pattern ${traits.markingPattern}` : 'none'}`,
+      ].join(' · ');
+      document.getElementById('detailTraits').textContent = traitsHtml;
+
+      let code = `import { generateSpirit } from "pixe-spirit";\n\nconst frame = generateSpirit({ seed: ${seed}`;
+      if (palette) code += `, palette: "${palette}"`;
+      code += ` });`;
+      document.getElementById('detailCode').textContent = code;
+
+      panel.classList.add('active');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    window.renderGallery = function() {
+      const start = parseInt(document.getElementById('seedStart').value) || 0;
+      const end = parseInt(document.getElementById('seedEnd').value) || 49;
+      const filterBody = document.getElementById('filterBody').value;
+      const filterEye = document.getElementById('filterEye').value;
+      const filterEar = document.getElementById('filterEar').value;
+      const filterTail = document.getElementById('filterTail').value;
+      const palette = document.getElementById('paletteSelect').value || undefined;
+
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+
+      for (let seed = start; seed <= end && seed < start + 200; seed++) {
+        const traits = deriveTraits(seed);
+        if (filterBody && traits.bodyShape !== filterBody) continue;
+        if (filterEye && traits.eyeStyle !== filterEye) continue;
+        if (filterEar && traits.earType !== filterEar) continue;
+        if (filterTail && traits.tailType !== filterTail) continue;
+
+        const opts = { seed };
+        if (palette) opts.palette = palette;
+        const frame = generateSpirit(opts);
+        const canvas = renderFrame(frame, SCALE);
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => showDetail(seed, palette);
+        card.appendChild(canvas);
+
+        const seedLabel = document.createElement('div');
+        seedLabel.className = 'seed-label';
+        seedLabel.textContent = `seed: ${seed}`;
+        card.appendChild(seedLabel);
+
+        const traitsLabel = document.createElement('div');
+        traitsLabel.className = 'traits-label';
+        traitsLabel.textContent = `${traits.bodyShape} · ${traits.eyeStyle} · ${traits.earType !== 'none' ? traits.earType + ' ears' : ''} ${traits.tailType !== 'none' ? traits.tailType + ' tail' : ''}`.trim().replace(/\s+/g, ' ');
+        card.appendChild(traitsLabel);
+
+        gallery.appendChild(card);
+      }
+    };
+
+    window.randomRange = function() {
+      const start = Math.floor(Math.random() * 9000);
+      document.getElementById('seedStart').value = start;
+      document.getElementById('seedEnd').value = start + 49;
+      renderGallery();
+    };
+
+    window.switchTab = function(tabId, btn) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('procedural').style.display = tabId === 'procedural' ? 'block' : 'none';
+      document.getElementById('presets').style.display = tabId === 'presets' ? 'block' : 'none';
+    };
+
+    // Render presets
+    const presetGallery = document.getElementById('presetGallery');
+    for (const preset of getPresets()) {
+      for (let seed = 0; seed < 8; seed++) {
+        const palettes = Object.keys(getPalettes());
+        const frame = generateSpirit({ seed, preset: preset.id, palette: palettes[seed] });
+        const canvas = renderFrame(frame, SCALE);
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.appendChild(canvas);
+
+        const label = document.createElement('div');
+        label.className = 'seed-label';
+        label.textContent = `${preset.name} (${palettes[seed]})`;
+        card.appendChild(label);
+
+        const desc = document.createElement('div');
+        desc.className = 'traits-label';
+        desc.textContent = preset.description;
+        card.appendChild(desc);
+
+        presetGallery.appendChild(card);
+      }
+    }
+
+    // Initial render
+    renderGallery();
+  </script>
+</body>
+</html>

@@ -5,8 +5,7 @@ const CX = 16;
 const CY = 16;
 
 /**
- * Draw a body shape on the frame and return the filled pixel coordinates
- * so other parts know where the body is.
+ * Draw a body shape on the frame.
  */
 export function drawBody(
   frame: SpiritFrame,
@@ -40,6 +39,15 @@ export function drawBody(
       break;
     case "teardrop":
       drawTeardropBody(size, fillBody, fillOutline, fillHighlight);
+      break;
+    case "dome":
+      drawDomeBody(size, fillBody, fillOutline, fillHighlight);
+      break;
+    case "tall_dome":
+      drawTallDomeBody(size, fillBody, fillOutline, fillHighlight);
+      break;
+    case "creature":
+      drawCreatureBody(size, fillBody, fillOutline, fillHighlight);
       break;
   }
 }
@@ -156,6 +164,125 @@ function drawTeardropBody(size: number, fill: FillFn, outline: FillFn, highlight
   highlight(CX - 1, CY - size);
 }
 
+/** Dome shape — flat bottom, round top (like a slime). */
+function drawDomeBody(size: number, fill: FillFn, outline: FillFn, highlight: FillFn) {
+  const r = size;
+  const bottomY = CY + Math.floor(r * 0.4);
+
+  // Top hemisphere
+  for (let dy = -r; dy <= 0; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= r) {
+        const x = CX + dx;
+        const y = CY + dy;
+        if (dist > r - 1.2) {
+          outline(x, y);
+        } else {
+          fill(x, y);
+        }
+      }
+    }
+  }
+
+  // Bottom rectangle (flat base)
+  for (let dy = 1; dy <= bottomY - CY; dy++) {
+    const width = r;
+    for (let dx = -width; dx <= width; dx++) {
+      const x = CX + dx;
+      const y = CY + dy;
+      if (Math.abs(dx) >= width || dy === bottomY - CY) {
+        outline(x, y);
+      } else {
+        fill(x, y);
+      }
+    }
+  }
+
+  highlight(CX - r + 2, CY - r + 2);
+  highlight(CX - r + 2, CY - r + 3);
+  highlight(CX - r + 3, CY - r + 2);
+}
+
+/** Tall dome — elongated slime shape (like hagure metal). */
+function drawTallDomeBody(size: number, fill: FillFn, outline: FillFn, highlight: FillFn) {
+  const rx = size - 1;
+  const ry = size;
+  const bottomY = CY + Math.floor(ry * 0.6);
+
+  // Top elliptical dome
+  for (let dy = -ry; dy <= 0; dy++) {
+    for (let dx = -rx; dx <= rx; dx++) {
+      const dist = (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry);
+      if (dist <= 1) {
+        const x = CX + dx;
+        const y = CY + dy;
+        if (dist > 0.82) {
+          outline(x, y);
+        } else {
+          fill(x, y);
+        }
+      }
+    }
+  }
+
+  // Tapered bottom
+  for (let dy = 1; dy <= bottomY - CY; dy++) {
+    const taper = 1 - dy / (bottomY - CY + 1);
+    const width = Math.floor(rx * taper);
+    for (let dx = -width; dx <= width; dx++) {
+      const x = CX + dx;
+      const y = CY + dy;
+      if (Math.abs(dx) >= width || dy === bottomY - CY) {
+        outline(x, y);
+      } else {
+        fill(x, y);
+      }
+    }
+  }
+
+  highlight(CX - rx + 2, CY - ry + 2);
+  highlight(CX - rx + 2, CY - ry + 3);
+  highlight(CX - rx + 3, CY - ry + 2);
+}
+
+/** Creature body — compact body with stubby legs, animal-like. */
+function drawCreatureBody(size: number, fill: FillFn, outline: FillFn, highlight: FillFn) {
+  const r = size - 1;
+  const bodyBottom = CY + r - 1;
+
+  // Main round body (slightly above center)
+  const bodyCY = CY - 1;
+  for (let dy = -r; dy <= r; dy++) {
+    for (let dx = -r; dx <= r; dx++) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist <= r) {
+        const x = CX + dx;
+        const y = bodyCY + dy;
+        if (dist > r - 1.2) {
+          outline(x, y);
+        } else {
+          fill(x, y);
+        }
+      }
+    }
+  }
+
+  // Stubby legs
+  const legSpread = Math.floor(r * 0.5);
+  for (const lx of [-legSpread, legSpread]) {
+    for (let dy = 0; dy < 3; dy++) {
+      outline(CX + lx - 1, bodyBottom + dy);
+      fill(CX + lx, bodyBottom + dy);
+      outline(CX + lx + 1, bodyBottom + dy);
+    }
+  }
+
+  highlight(CX - r + 2, bodyCY - r + 2);
+  highlight(CX - r + 2, bodyCY - r + 3);
+  highlight(CX - r + 3, bodyCY - r + 2);
+}
+
 /** Get the vertical center and top of the body for positioning other parts. */
 export function getBodyBounds(
   shape: BodyShape,
@@ -172,5 +299,11 @@ export function getBodyBounds(
       return { top: CY - size, bottom: CY + size, eyeY: CY - 1 };
     case "teardrop":
       return { top: CY - size - 2, bottom: CY + size, eyeY: CY - 2 };
+    case "dome":
+      return { top: CY - size, bottom: CY + Math.floor(size * 0.4), eyeY: CY - 2 };
+    case "tall_dome":
+      return { top: CY - size, bottom: CY + Math.floor(size * 0.6), eyeY: CY - 3 };
+    case "creature":
+      return { top: CY - size, bottom: CY + size + 2, eyeY: CY - 2 };
   }
 }

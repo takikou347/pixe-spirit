@@ -8,6 +8,7 @@ export type {
   BodyShape,
   ColorPalette,
   DecorationType,
+  EarType,
   EyeStyle,
   GenerateOptions,
   MouthStyle,
@@ -16,4 +17,6 @@ export type {
   PresetInfo,
   SpiritFrame,
   SpiritTraits,
+  TailType,
+  TraitsOverride,
 } from "./types.js";

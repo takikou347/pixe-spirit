@@ -41,8 +41,16 @@ export interface AnimationConfig {
   loop: boolean;
 }
 
-/** Body shape type (procedurally selected from seed). */
-export type BodyShape = "circle" | "oval_tall" | "oval_wide" | "rounded_square" | "teardrop";
+/** Body shape type. */
+export type BodyShape =
+  | "circle"
+  | "oval_tall"
+  | "oval_wide"
+  | "rounded_square"
+  | "teardrop"
+  | "dome"
+  | "tall_dome"
+  | "creature";
 
 /** Eye style type. */
 export type EyeStyle = "dot" | "small" | "medium" | "large" | "cyclops";
@@ -61,6 +69,12 @@ export type DecorationType =
   | "crown"
   | "book";
 
+/** Ear type. */
+export type EarType = "none" | "pointed" | "round" | "long" | "cat";
+
+/** Tail type. */
+export type TailType = "none" | "bushy" | "thin" | "curled";
+
 /** Resolved spirit traits derived from a seed. */
 export interface SpiritTraits {
   bodyShape: BodyShape;
@@ -69,9 +83,14 @@ export interface SpiritTraits {
   eyeSpread: number;
   mouthStyle: MouthStyle;
   decoration: DecorationType;
+  earType: EarType;
+  tailType: TailType;
   hasMarkings: boolean;
   markingPattern: number;
 }
+
+/** Partial traits for overriding specific features. Unspecified traits are derived from seed. */
+export type TraitsOverride = Partial<SpiritTraits>;
 
 /** Metadata about a preset. */
 export interface PresetInfo {
@@ -94,4 +113,6 @@ export interface GenerateOptions {
   customPalette?: ColorPalette;
   /** Use a preset character instead of procedural generation. */
   preset?: PresetId;
+  /** Override specific traits. Unspecified traits are derived from seed. */
+  traits?: TraitsOverride;
 }
