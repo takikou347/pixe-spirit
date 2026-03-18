@@ -38,12 +38,7 @@ export function drawDecoration(
   }
 }
 
-function drawHalo(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawHalo(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 2;
   for (let dx = -2; dx <= 2; dx++) {
     setPixel(frame, CX + dx, y + oy, palette.accent);
@@ -52,12 +47,7 @@ function drawHalo(
   setPixel(frame, CX + 3, y + 1 + oy, palette.accent);
 }
 
-function drawHorns(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawHorns(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 1;
   // Left horn
   setPixel(frame, CX - 3, y + oy, palette.accent);
@@ -86,12 +76,7 @@ function drawAntennae(
   setPixel(frame, CX + 3, y - 3 + oy, palette.accent);
 }
 
-function drawHat(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawHat(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 1;
   // Brim
   for (let dx = -4; dx <= 4; dx++) {
@@ -104,12 +89,7 @@ function drawHat(
   }
 }
 
-function drawLeaf(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawLeaf(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 1;
   // Stem
   setPixel(frame, CX, y + oy, palette.bodyDark);
@@ -120,12 +100,7 @@ function drawLeaf(
   setPixel(frame, CX, y - 2 + oy, palette.accent);
 }
 
-function drawCrown(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawCrown(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 1;
   // Base
   for (let dx = -3; dx <= 3; dx++) {
@@ -140,12 +115,7 @@ function drawCrown(
   setPixel(frame, CX + 3, y - 2 + oy, palette.accent);
 }
 
-function drawBook(
-  frame: SpiritFrame,
-  bodyTop: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawBook(frame: SpiritFrame, bodyTop: number, palette: ColorPalette, oy: number): void {
   const y = bodyTop - 1;
   for (let dx = -3; dx <= 3; dx++) {
     setPixel(frame, CX + dx, y + oy, palette.accent);

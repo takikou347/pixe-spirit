@@ -59,10 +59,22 @@ export function drawPresetChildBalanced(
 
   const lo = seedOffset(seed, 1, 1);
   const lightPositions: [number, number][][] = [
-    [[6 + lo, 10], [26 - lo, 12]],
-    [[7 + lo, 9], [25 - lo, 13]],
-    [[6 + lo, 10], [26 - lo, 12]],
-    [[5 + lo, 11], [27 - lo, 11]],
+    [
+      [6 + lo, 10],
+      [26 - lo, 12],
+    ],
+    [
+      [7 + lo, 9],
+      [25 - lo, 13],
+    ],
+    [
+      [6 + lo, 10],
+      [26 - lo, 12],
+    ],
+    [
+      [5 + lo, 11],
+      [27 - lo, 11],
+    ],
   ];
   const lightPhase = frame % 4;
   for (const [lx, ly] of lightPositions[lightPhase]) {

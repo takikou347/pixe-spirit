@@ -34,46 +34,26 @@ export function drawMarkings(
   }
 }
 
-function drawDots(
-  frame: SpiritFrame,
-  palette: ColorPalette,
-  ox: number,
-  oy: number,
-): void {
+function drawDots(frame: SpiritFrame, palette: ColorPalette, ox: number, oy: number): void {
   setPixel(frame, CX - 2 + ox, CY - 2 + oy, palette.bodyLight);
   setPixel(frame, CX + 2 + ox, CY + oy, palette.bodyLight);
   setPixel(frame, CX + ox, CY + 2 + oy, palette.bodyLight);
 }
 
-function drawStripe(
-  frame: SpiritFrame,
-  palette: ColorPalette,
-  ox: number,
-  oy: number,
-): void {
+function drawStripe(frame: SpiritFrame, palette: ColorPalette, ox: number, oy: number): void {
   for (let dx = -2; dx <= 2; dx++) {
     setPixel(frame, CX + dx + ox, CY + 2 + oy, palette.bodyLight);
   }
 }
 
-function drawPatch(
-  frame: SpiritFrame,
-  palette: ColorPalette,
-  ox: number,
-  oy: number,
-): void {
+function drawPatch(frame: SpiritFrame, palette: ColorPalette, ox: number, oy: number): void {
   setPixel(frame, CX + 1 + ox, CY + oy, palette.bodyLight);
   setPixel(frame, CX + 2 + ox, CY + oy, palette.bodyLight);
   setPixel(frame, CX + 1 + ox, CY + 1 + oy, palette.bodyLight);
   setPixel(frame, CX + 2 + ox, CY + 1 + oy, palette.bodyLight);
 }
 
-function drawSpeckles(
-  frame: SpiritFrame,
-  palette: ColorPalette,
-  seed: number,
-  oy: number,
-): void {
+function drawSpeckles(frame: SpiritFrame, palette: ColorPalette, seed: number, oy: number): void {
   for (let i = 0; i < 4; i++) {
     const sx = CX + seedOffset(seed, 20 + i * 2, 3);
     const sy = CY + seedOffset(seed, 21 + i * 2, 3);

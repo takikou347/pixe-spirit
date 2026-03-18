@@ -61,12 +61,7 @@ function drawSmileMouth(
   setPixel(frame, CX + 1, mouthY + oy, palette.eye);
 }
 
-function drawSadMouth(
-  frame: SpiritFrame,
-  mouthY: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawSadMouth(frame: SpiritFrame, mouthY: number, palette: ColorPalette, oy: number): void {
   setPixel(frame, CX - 1, mouthY + 1 + oy, palette.eye);
   setPixel(frame, CX, mouthY + oy, palette.eye);
   setPixel(frame, CX + 1, mouthY + 1 + oy, palette.eye);

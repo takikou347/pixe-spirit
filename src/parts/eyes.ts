@@ -146,12 +146,7 @@ function drawLargeEyes(
   }
 }
 
-function drawCyclopsEye(
-  frame: SpiritFrame,
-  eyeY: number,
-  palette: ColorPalette,
-  oy: number,
-): void {
+function drawCyclopsEye(frame: SpiritFrame, eyeY: number, palette: ColorPalette, oy: number): void {
   for (let dy = 0; dy < 3; dy++) {
     for (let dx = 0; dx < 3; dx++) {
       setPixel(frame, CX - 1 + dx, eyeY + dy + oy, palette.eye);

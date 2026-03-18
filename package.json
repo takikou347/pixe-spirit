@@ -44,11 +44,12 @@
   ],
   "author": "takikou347",
   "license": "MIT",
+  "packageManager": "pnpm@10.30.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/takikou347/pixe-spirit.git"
   },
-  "homepage": "https://github.com/takikou347/pixe-spirit",
+  "homepage": "https://takikou347.github.io/pixe-spirit/",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
