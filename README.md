@@ -2,14 +2,18 @@
 
 Seed-deterministic pixel spirit generator. Outputs pure pixel data — rendering is up to you.
 
+[Gallery](https://takikou347.github.io/pixe-spirit/) | [日本語版はこちら](./docs/README_ja.md)
+
 ## Features
 
-- **Procedural generation**: Different seeds produce different characters — body shape, eyes, mouth, decorations all vary
+- **Procedural generation**: Different seeds produce unique characters with varied body shapes, eyes, ears, tails, decorations, and markings
 - **Deterministic**: Same seed always produces the same character
+- **Traits override**: Specify some traits, randomize the rest from seed
 - **Framework-agnostic**: Outputs raw pixel data (2D color array), not Canvas/SVG/DOM
 - **8 color palettes**: 4 colors x light/dark themes, plus custom palette support
 - **Presets**: 4 pre-designed characters (Egg, Baby, Child Diary, Child Balanced)
 - **Animations**: idle, happy, sad, sleep frame data
+- **Dual format**: ESM and CommonJS builds with TypeScript declarations
 
 ## Install
 
@@ -32,9 +36,9 @@ const frame = generateSpirit({ seed: 42 });
 Different seeds produce different characters:
 
 ```typescript
-const char1 = generateSpirit({ seed: 0 });   // might be: round body, dot eyes, halo
-const char2 = generateSpirit({ seed: 100 }); // might be: tall body, large eyes, horns
-const char3 = generateSpirit({ seed: 999 }); // might be: wide body, cyclops, crown
+const char1 = generateSpirit({ seed: 0 });   // round body, dot eyes, halo
+const char2 = generateSpirit({ seed: 100 }); // dome (slime-like), large eyes, horns
+const char3 = generateSpirit({ seed: 999 }); // creature with legs, cat ears, curled tail
 ```
 
 ## Procedural Traits
@@ -43,19 +47,43 @@ Each seed deterministically generates these traits:
 
 | Trait | Variants |
 |-------|----------|
-| **Body shape** | circle, oval (tall), oval (wide), rounded square, teardrop |
+| **Body shape** | circle, oval (tall), oval (wide), rounded square, teardrop, dome, tall dome, creature |
 | **Eye style** | dot, small, medium, large, cyclops |
 | **Mouth style** | line, smile, open, none |
 | **Decoration** | none, halo, horns, antennae, hat, leaf, crown, book |
+| **Ear type** | none, pointed, round, long, cat |
+| **Tail type** | none, bushy, thin, curled |
 | **Markings** | dots, stripe, patch, speckles (or none) |
 
-You can inspect what traits a seed will produce:
+Body shapes include slime-like forms (dome, tall dome) and animal-like forms (creature with stubby legs).
+
+### Inspect Traits
 
 ```typescript
 import { deriveTraits } from "pixe-spirit";
 
 const traits = deriveTraits(42);
-// { bodyShape: "circle", eyeStyle: "medium", mouthStyle: "smile", decoration: "halo", ... }
+// { bodyShape: "circle", eyeStyle: "medium", earType: "none", tailType: "none", ... }
+```
+
+### Override Specific Traits
+
+Use `traits` to pin specific features while letting the rest vary by seed:
+
+```typescript
+import { generateSpirit } from "pixe-spirit";
+
+// Force a dome (slime) body with cat ears, but randomize everything else
+const slimeCat = generateSpirit({
+  seed: 42,
+  traits: { bodyShape: "dome", earType: "cat" },
+});
+
+// Force a creature body with a bushy tail
+const foxLike = generateSpirit({
+  seed: 7,
+  traits: { bodyShape: "creature", earType: "pointed", tailType: "bushy" },
+});
 ```
 
 ## Render to Canvas (example)
@@ -132,6 +160,7 @@ Generate a single frame of pixel data.
 | `palette` | `PaletteId` | *(from seed)* | Preset palette ID |
 | `customPalette` | `ColorPalette` | — | Custom colors (overrides all) |
 | `preset` | `PresetId` | — | Use a pre-designed character |
+| `traits` | `TraitsOverride` | — | Override specific traits (partial) |
 
 ### `SpiritFrame`
 
@@ -143,9 +172,9 @@ interface SpiritFrame {
 }
 ```
 
-### `deriveTraits(seed): SpiritTraits`
+### `deriveTraits(seed, overrides?): SpiritTraits`
 
-Inspect what traits a seed will produce without generating pixels.
+Inspect or override what traits a seed will produce without generating pixels.
 
 ### `getPresets(): PresetInfo[]`
 
